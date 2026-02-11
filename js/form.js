@@ -1,5 +1,5 @@
 /**
- * Lógica del formulario de generación de landings
+ * Lógica del formulario - Landing Generator v2
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,72 +9,54 @@ document.addEventListener('DOMContentLoaded', () => {
 function initForm() {
     const form = document.getElementById('landing-form');
     const tipoRadios = document.querySelectorAll('input[name="tipo_landing"]');
-    const modeRadios = document.querySelectorAll('input[name="section_mode"]');
+    const sectionModeSelect = document.getElementById('section-mode');
     
-    // Manejar cambio de tipo de landing
+    // Inicializar lista de secciones
+    updateSectionsList();
+    
+    // Event listeners
     tipoRadios.forEach(radio => {
-        radio.addEventListener('change', handleTipoChange);
+        radio.addEventListener('change', () => updateSectionsList());
     });
     
-    // Manejar cambio de modo de secciones
-    modeRadios.forEach(radio => {
-        radio.addEventListener('change', handleModeChange);
-    });
+    sectionModeSelect.addEventListener('change', handleModeChange);
     
-    // Manejar envío del formulario
     form.addEventListener('submit', handleSubmit);
 }
 
 /**
- * Muestra/oculta las secciones según el tipo de landing seleccionado
+ * Actualiza la lista de secciones según el tipo seleccionado
  */
-function handleTipoChange(e) {
-    const tipo = e.target.value;
-    const seccionesProducto = document.getElementById('secciones-producto');
-    const seccionesAgrupadora = document.getElementById('secciones-agrupadora');
-    const modeSeleccionar = document.querySelector('input[name="section_mode"][value="seleccionar"]');
+function updateSectionsList() {
+    const tipo = document.querySelector('input[name="tipo_landing"]:checked')?.value || 'producto';
+    const secciones = CONFIG.SECCIONES[tipo];
+    const orden = CONFIG.ORDEN_SECCIONES[tipo];
+    const lista = document.getElementById('secciones-lista');
     
-    // Ocultar ambos primero
-    seccionesProducto.classList.add('hidden');
-    seccionesAgrupadora.classList.add('hidden');
+    lista.innerHTML = '';
     
-    // Mostrar el correspondiente solo si está en modo seleccionar
-    if (modeSeleccionar.checked) {
-        if (tipo === 'producto') {
-            seccionesProducto.classList.remove('hidden');
-        } else {
-            seccionesAgrupadora.classList.remove('hidden');
-        }
-    }
-    
-    // Limpiar selecciones anteriores
-    document.querySelectorAll('input[name="secciones"]').forEach(cb => {
-        cb.checked = false;
+    orden.forEach(key => {
+        const seccion = secciones[key];
+        const label = document.createElement('label');
+        label.className = 'checkbox-streamlit';
+        label.innerHTML = `
+            <input type="checkbox" name="secciones" value="${key}" checked>
+            <span>${seccion.icono} ${seccion.nombre}</span>
+        `;
+        lista.appendChild(label);
     });
 }
 
 /**
- * Muestra/oculta el selector de secciones según el modo
+ * Muestra/oculta el selector de secciones
  */
 function handleModeChange(e) {
-    const mode = e.target.value;
-    const tipoSeleccionado = document.querySelector('input[name="tipo_landing"]:checked');
-    const seccionesProducto = document.getElementById('secciones-producto');
-    const seccionesAgrupadora = document.getElementById('secciones-agrupadora');
+    const selector = document.getElementById('section-selector');
     
-    if (mode === 'todas') {
-        // Ocultar ambos selectores
-        seccionesProducto.classList.add('hidden');
-        seccionesAgrupadora.classList.add('hidden');
-    } else if (tipoSeleccionado) {
-        // Mostrar el selector correspondiente al tipo
-        if (tipoSeleccionado.value === 'producto') {
-            seccionesProducto.classList.remove('hidden');
-            seccionesAgrupadora.classList.add('hidden');
-        } else {
-            seccionesAgrupadora.classList.remove('hidden');
-            seccionesProducto.classList.add('hidden');
-        }
+    if (e.target.value === 'seleccionar') {
+        selector.classList.remove('hidden');
+    } else {
+        selector.classList.add('hidden');
     }
 }
 
@@ -86,16 +68,13 @@ async function handleSubmit(e) {
     
     const formData = collectFormData();
     
-    // Validar datos
     if (!validateFormData(formData)) {
         return;
     }
     
-    // Mostrar estado de carga
     showLoading();
     
     try {
-        // Enviar al webhook de n8n
         const response = await fetch(CONFIG.WEBHOOK_GENERAR, {
             method: 'POST',
             headers: {
@@ -110,10 +89,7 @@ async function handleSubmit(e) {
         
         const result = await response.json();
         
-        // Guardar datos en sessionStorage para la página de preview
         sessionStorage.setItem('landing_session', JSON.stringify(result));
-        
-        // Redirigir a la página de preview
         window.location.href = 'preview.html';
         
     } catch (error) {
@@ -128,27 +104,22 @@ async function handleSubmit(e) {
  */
 function collectFormData() {
     const tipo = document.querySelector('input[name="tipo_landing"]:checked')?.value;
-    const mode = document.querySelector('input[name="section_mode"]:checked')?.value;
+    const mode = document.getElementById('section-mode').value;
     
-    // Determinar secciones a generar
     let secciones;
     if (mode === 'todas') {
-        // Todas las secciones del tipo seleccionado
         secciones = CONFIG.ORDEN_SECCIONES[tipo] || [];
     } else {
-        // Solo las seleccionadas
         secciones = Array.from(document.querySelectorAll('input[name="secciones"]:checked'))
             .map(cb => cb.value);
     }
     
-    // Procesar keywords (una por línea)
     const keywordsRaw = document.getElementById('keywords').value;
     const keywords = keywordsRaw
         .split('\n')
         .map(k => k.trim())
         .filter(k => k.length > 0);
     
-    // Procesar URLs (una por línea)
     const urlsRaw = document.getElementById('urls_referencia').value;
     const urls = urlsRaw
         .split('\n')
@@ -173,7 +144,7 @@ function collectFormData() {
  */
 function validateFormData(data) {
     if (!data.tipo_landing) {
-        alert('Por favor, seleccioná el tipo de landing (Producto o Agrupadora)');
+        alert('Por favor, seleccioná el tipo de landing');
         return false;
     }
     
@@ -207,21 +178,14 @@ function isValidUrl(string) {
  * Muestra el estado de carga
  */
 function showLoading() {
-    const loadingContainer = document.getElementById('loading-state');
-    const form = document.getElementById('landing-form');
-    const btnText = document.querySelector('#btn-generar .btn-text');
-    const btnLoading = document.querySelector('#btn-generar .btn-loading');
+    const overlay = document.getElementById('loading-overlay');
+    const btn = document.getElementById('btn-generar');
     
-    // Ocultar formulario y mostrar loading
-    form.style.opacity = '0.5';
-    form.style.pointerEvents = 'none';
-    loadingContainer.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+    btn.disabled = true;
+    btn.querySelector('.btn-content').classList.add('hidden');
+    btn.querySelector('.btn-loading').classList.remove('hidden');
     
-    // Cambiar estado del botón
-    btnText.classList.add('hidden');
-    btnLoading.classList.remove('hidden');
-    
-    // Iniciar animación de pasos
     animateLoadingSteps();
 }
 
@@ -229,17 +193,17 @@ function showLoading() {
  * Oculta el estado de carga
  */
 function hideLoading() {
-    const loadingContainer = document.getElementById('loading-state');
-    const form = document.getElementById('landing-form');
-    const btnText = document.querySelector('#btn-generar .btn-text');
-    const btnLoading = document.querySelector('#btn-generar .btn-loading');
+    const overlay = document.getElementById('loading-overlay');
+    const btn = document.getElementById('btn-generar');
     
-    form.style.opacity = '1';
-    form.style.pointerEvents = 'auto';
-    loadingContainer.classList.add('hidden');
+    overlay.classList.add('hidden');
+    btn.disabled = false;
+    btn.querySelector('.btn-content').classList.remove('hidden');
+    btn.querySelector('.btn-loading').classList.add('hidden');
     
-    btnText.classList.remove('hidden');
-    btnLoading.classList.add('hidden');
+    if (window.loadingInterval) {
+        clearInterval(window.loadingInterval);
+    }
 }
 
 /**
@@ -247,7 +211,7 @@ function hideLoading() {
  */
 function animateLoadingSteps() {
     const stepElement = document.getElementById('loading-step');
-    const progressBar = document.getElementById('loading-progress-bar');
+    const progressBar = document.getElementById('loading-bar-fill');
     const steps = CONFIG.LOADING_STEPS;
     let currentStep = 0;
     
@@ -262,6 +226,5 @@ function animateLoadingSteps() {
         }
     }, 2000);
     
-    // Guardar referencia para poder limpiar si hay error
     window.loadingInterval = interval;
 }
