@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview de Landing | Naranja X</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <span class="logo-icon">🍊</span>
+                    <span class="logo-text">Landing Generator</span>
+                </div>
+                <a href="index.html" class="btn-secondary">← Nueva landing</a>
+            </div>
+            <div class="preview-info">
+                <span class="badge" id="badge-tipo">Producto</span>
+                <h1 id="preview-title">Nombre del producto</h1>
+            </div>
+        </header>
+
+        <!-- Barra de progreso -->
+        <div class="progress-bar-container">
+            <div class="progress-stats">
+                <span id="secciones-aprobadas">0</span> de <span id="secciones-total">0</span> secciones aprobadas
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Contenedor de secciones -->
+        <main class="sections-container" id="sections-container">
+            <!-- Las secciones se cargan dinámicamente -->
+        </main>
+
+        <!-- Acciones finales -->
+        <div class="final-actions hidden" id="final-actions">
+            <h3>¡Todas las secciones aprobadas!</h3>
+            <div class="action-buttons">
+                <button class="btn-primary" id="btn-copiar-todo">
+                    📋 Copiar todo
+                </button>
+                <button class="btn-secondary" id="btn-descargar">
+                    📄 Descargar como .txt
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal de chat para regeneración -->
+        <div class="modal-overlay hidden" id="modal-regenerar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-titulo">Regenerar sección</h3>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <!-- Contenido actual -->
+                    <div class="current-content">
+                        <h4>Contenido actual:</h4>
+                        <div class="content-preview" id="modal-contenido-actual"></div>
+                    </div>
+
+                    <!-- Chat de regeneración -->
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Los mensajes se agregan dinámicamente -->
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <textarea 
+                                id="chat-input" 
+                                placeholder="Ej: Hacelo más emocional, quitá la parte de requisitos, usá un tono más joven..."
+                                rows="2"
+                            ></textarea>
+                            <button class="btn-primary btn-send" id="btn-enviar-chat">
+                                <span class="btn-text">Regenerar</span>
+                                <span class="btn-loading hidden">
+                                    <span class="spinner"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="btn-cancelar-modal">Cancelar</button>
+                    <button class="btn-primary" id="btn-usar-version">Usar esta versión</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Herramienta interna del equipo de Organic Growth · Naranja X</p>
+        </footer>
+    </div>
+
+    <!-- Template para una sección -->
+    <template id="template-seccion">
+        <article class="section-card" data-seccion="">
+            <div class="section-card-header">
+                <div class="section-info">
+                    <span class="section-icon"></span>
+                    <h3 class="section-name"></h3>
+                </div>
+                <div class="section-status">
+                    <span class="status-badge status-pendiente">Pendiente</span>
+                </div>
+            </div>
+            
+            <div class="section-card-content">
+                <div class="content-text"></div>
+            </div>
+            
+            <div class="section-card-actions">
+                <button class="btn-aprobar">
+                    ✓ Aprobar
+                </button>
+                <button class="btn-regenerar">
+                    ↻ Regenerar
+                </button>
+                <button class="btn-copiar">
+                    📋 Copiar
+                </button>
+            </div>
+        </article>
+    </template>
+
+    <script src="js/config.js"></script>
+    <script src="js/preview.js"></script>
+</body>
+</html>
