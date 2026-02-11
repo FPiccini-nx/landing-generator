@@ -3,133 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preview de Landing | Naranja X</title>
+    <title>Preview | Landing Generator</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-top">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
                 <div class="logo">
                     <span class="logo-icon">🍊</span>
                     <span class="logo-text">Landing Generator</span>
                 </div>
-                <a href="index.html" class="btn-secondary">← Nueva landing</a>
             </div>
-            <div class="preview-info">
-                <span class="badge" id="badge-tipo">Producto</span>
-                <h1 id="preview-title">Nombre del producto</h1>
-            </div>
-        </header>
 
-        <!-- Barra de progreso -->
-        <div class="progress-bar-container">
-            <div class="progress-stats">
-                <span id="secciones-aprobadas">0</span> de <span id="secciones-total">0</span> secciones aprobadas
-            </div>
-            <div class="progress-bar">
-                <div class="progress-bar-fill" id="progress-fill"></div>
-            </div>
-        </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <span class="nav-section-title">SESIÓN ACTUAL</span>
+                    
+                    <div class="session-info">
+                        <div class="session-item">
+                            <span class="session-label">Tipo</span>
+                            <span class="session-value" id="sidebar-tipo">-</span>
+                        </div>
+                        <div class="session-item">
+                            <span class="session-label">Producto</span>
+                            <span class="session-value" id="sidebar-producto">-</span>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Contenedor de secciones -->
-        <main class="sections-container" id="sections-container">
-            <!-- Las secciones se cargan dinámicamente -->
+                <div class="nav-section">
+                    <span class="nav-section-title">PROGRESO</span>
+                    <div class="progress-sidebar">
+                        <div class="progress-numbers">
+                            <span id="aprobadas-count">0</span> / <span id="total-count">0</span>
+                        </div>
+                        <div class="progress-bar-mini">
+                            <div class="progress-bar-mini-fill" id="progress-mini-fill"></div>
+                        </div>
+                        <span class="progress-label">secciones aprobadas</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <span class="nav-section-title">SECCIONES</span>
+                    <div class="section-list" id="sidebar-sections">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <span class="nav-section-title">ACCIONES</span>
+                    <button class="sidebar-btn" id="btn-copiar-todo">
+                        📋 Copiar todo
+                    </button>
+                    <button class="sidebar-btn" id="btn-descargar">
+                        📥 Descargar .txt
+                    </button>
+                    <a href="index.html" class="sidebar-btn sidebar-btn-outline">
+                        ← Nueva landing
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-title-row">
+                    <h1 id="preview-title">Preview de Landing</h1>
+                    <span class="type-badge" id="type-badge">Producto</span>
+                </div>
+                <p class="subtitle">Revisá cada sección, editá lo que necesites y aprobá cuando esté listo</p>
+            </header>
+
+            <!-- Sections Container -->
+            <div class="sections-grid" id="sections-container">
+                <!-- Las secciones se cargan dinámicamente -->
+            </div>
+
+            <!-- Success Banner -->
+            <div class="success-banner hidden" id="success-banner">
+                <div class="success-icon">🎉</div>
+                <div class="success-content">
+                    <h3>¡Todas las secciones aprobadas!</h3>
+                    <p>Tu landing está lista. Podés copiar el contenido o descargarlo.</p>
+                </div>
+            </div>
         </main>
-
-        <!-- Acciones finales -->
-        <div class="final-actions hidden" id="final-actions">
-            <h3>¡Todas las secciones aprobadas!</h3>
-            <div class="action-buttons">
-                <button class="btn-primary" id="btn-copiar-todo">
-                    📋 Copiar todo
-                </button>
-                <button class="btn-secondary" id="btn-descargar">
-                    📄 Descargar como .txt
-                </button>
-            </div>
-        </div>
-
-        <!-- Modal de chat para regeneración -->
-        <div class="modal-overlay hidden" id="modal-regenerar">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="modal-titulo">Regenerar sección</h3>
-                    <button class="modal-close" id="modal-close">&times;</button>
-                </div>
-                
-                <div class="modal-body">
-                    <!-- Contenido actual -->
-                    <div class="current-content">
-                        <h4>Contenido actual:</h4>
-                        <div class="content-preview" id="modal-contenido-actual"></div>
-                    </div>
-
-                    <!-- Chat de regeneración -->
-                    <div class="chat-container">
-                        <div class="chat-messages" id="chat-messages">
-                            <!-- Los mensajes se agregan dinámicamente -->
-                        </div>
-                        
-                        <div class="chat-input-container">
-                            <textarea 
-                                id="chat-input" 
-                                placeholder="Ej: Hacelo más emocional, quitá la parte de requisitos, usá un tono más joven..."
-                                rows="2"
-                            ></textarea>
-                            <button class="btn-primary btn-send" id="btn-enviar-chat">
-                                <span class="btn-text">Regenerar</span>
-                                <span class="btn-loading hidden">
-                                    <span class="spinner"></span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-secondary" id="btn-cancelar-modal">Cancelar</button>
-                    <button class="btn-primary" id="btn-usar-version">Usar esta versión</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Herramienta interna del equipo de Organic Growth · Naranja X</p>
-        </footer>
     </div>
 
-    <!-- Template para una sección -->
+    <!-- Modal de Regeneración -->
+    <div class="modal-overlay hidden" id="modal-regenerar">
+        <div class="modal-streamlit">
+            <div class="modal-header-streamlit">
+                <h3 id="modal-titulo">Regenerar sección</h3>
+                <button class="modal-close-streamlit" id="modal-close">✕</button>
+            </div>
+            
+            <div class="modal-body-streamlit">
+                <div class="current-version">
+                    <label class="input-label">Versión actual</label>
+                    <div class="version-box" id="modal-contenido-actual"></div>
+                </div>
+
+                <div class="regenerate-input">
+                    <label class="input-label">¿Qué cambios querés hacer?</label>
+                    <div class="chat-input-row">
+                        <textarea 
+                            id="chat-input" 
+                            placeholder="Ej: Hacelo más emocional, quitá la parte técnica, usá un tono más joven..."
+                            rows="2"
+                        ></textarea>
+                        <button class="btn-regenerate" id="btn-enviar-chat">
+                            <span class="btn-text">Regenerar</span>
+                            <span class="btn-loading hidden">
+                                <span class="spinner-small"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-history" id="chat-history">
+                    <!-- Historial de cambios -->
+                </div>
+            </div>
+
+            <div class="modal-footer-streamlit">
+                <button class="btn-secondary-streamlit" id="btn-cancelar-modal">Cancelar</button>
+                <button class="btn-primary-streamlit btn-small" id="btn-usar-version">
+                    <span class="btn-content">Usar esta versión</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template para sección -->
     <template id="template-seccion">
-        <article class="section-card" data-seccion="">
-            <div class="section-card-header">
-                <div class="section-info">
-                    <span class="section-icon"></span>
-                    <h3 class="section-name"></h3>
+        <div class="section-card-streamlit" data-seccion="">
+            <div class="section-card-header-streamlit">
+                <div class="section-title-row">
+                    <span class="section-icon-streamlit"></span>
+                    <h3 class="section-name-streamlit"></h3>
                 </div>
-                <div class="section-status">
-                    <span class="status-badge status-pendiente">Pendiente</span>
-                </div>
+                <span class="status-pill status-pending">Pendiente</span>
             </div>
             
-            <div class="section-card-content">
-                <div class="content-text"></div>
+            <div class="section-card-body">
+                <div class="section-content"></div>
             </div>
             
-            <div class="section-card-actions">
-                <button class="btn-aprobar">
-                    ✓ Aprobar
-                </button>
-                <button class="btn-regenerar">
-                    ↻ Regenerar
-                </button>
-                <button class="btn-copiar">
-                    📋 Copiar
-                </button>
+            <div class="section-card-footer">
+                <div class="footer-left">
+                    <button class="btn-icon-streamlit btn-copy" title="Copiar">
+                        📋
+                    </button>
+                </div>
+                <div class="footer-right">
+                    <button class="btn-secondary-streamlit btn-small btn-regenerar">
+                        ↻ Editar
+                    </button>
+                    <button class="btn-success-streamlit btn-small btn-aprobar">
+                        ✓ Aprobar
+                    </button>
+                </div>
             </div>
-        </article>
+        </div>
+    </template>
+
+    <!-- Template para sidebar section item -->
+    <template id="template-sidebar-item">
+        <a href="#" class="section-nav-item" data-seccion="">
+            <span class="section-nav-icon"></span>
+            <span class="section-nav-name"></span>
+            <span class="section-nav-status">○</span>
+        </a>
     </template>
 
     <script src="js/config.js"></script>
