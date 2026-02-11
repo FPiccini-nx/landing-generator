@@ -3,249 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Landings | Naranja X</title>
+    <title>Landing Generator | Naranja X</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <span class="logo-icon">🍊</span>
-                <span class="logo-text">Landing Generator</span>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🍊</span>
+                    <span class="logo-text">Landing Generator</span>
+                </div>
+                <span class="version-badge">v1.0</span>
             </div>
-            <p class="header-subtitle">Generá landings de Producto o Agrupadoras en minutos</p>
-        </header>
 
-        <!-- Formulario principal -->
-        <form id="landing-form" class="form-container">
-            
-            <!-- Paso 1: Tipo de landing -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">1</span>
-                    Tipo de Landing
-                </h2>
-                
-                <div class="radio-group">
-                    <label class="radio-card">
-                        <input type="radio" name="tipo_landing" value="producto" required>
-                        <div class="radio-card-content">
-                            <span class="radio-icon">📦</span>
-                            <span class="radio-label">Landing de Producto</span>
-                            <span class="radio-description">Para un único producto o servicio específico</span>
-                        </div>
-                    </label>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <span class="nav-section-title">CONFIGURACIÓN</span>
                     
-                    <label class="radio-card">
-                        <input type="radio" name="tipo_landing" value="agrupadora">
-                        <div class="radio-card-content">
-                            <span class="radio-icon">📂</span>
-                            <span class="radio-label">Landing Agrupadora</span>
-                            <span class="radio-description">Para una categoría con varios productos</span>
+                    <!-- Tipo de Landing -->
+                    <div class="nav-item">
+                        <label class="input-label">Tipo de Landing</label>
+                        <div class="radio-group-streamlit">
+                            <label class="radio-streamlit">
+                                <input type="radio" name="tipo_landing" value="producto" checked>
+                                <span class="radio-button"></span>
+                                <span>Producto</span>
+                            </label>
+                            <label class="radio-streamlit">
+                                <input type="radio" name="tipo_landing" value="agrupadora">
+                                <span class="radio-button"></span>
+                                <span>Agrupadora</span>
+                            </label>
                         </div>
-                    </label>
-                </div>
-            </section>
+                    </div>
 
-            <!-- Paso 2: Secciones a generar -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">2</span>
-                    Secciones a generar
-                </h2>
-                
-                <div class="section-mode-toggle">
-                    <label class="toggle-option">
-                        <input type="radio" name="section_mode" value="todas" checked>
-                        <span>Generar todas las secciones</span>
-                    </label>
-                    <label class="toggle-option">
-                        <input type="radio" name="section_mode" value="seleccionar">
-                        <span>Seleccionar secciones específicas</span>
-                    </label>
-                </div>
+                    <!-- Modo de secciones -->
+                    <div class="nav-item">
+                        <label class="input-label">Secciones a generar</label>
+                        <div class="select-wrapper">
+                            <select id="section-mode" class="select-streamlit">
+                                <option value="todas">Todas las secciones</option>
+                                <option value="seleccionar">Seleccionar específicas</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <!-- Secciones para Producto -->
-                <div id="secciones-producto" class="checkbox-grid hidden">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="hero">
-                        <span>Hero</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="definicion">
-                        <span>Definición</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="beneficios">
-                        <span>Beneficios</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="tabla_tecnica">
-                        <span>Tabla técnica</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="como_pedir">
-                        <span>Cómo pedir</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="requisitos">
-                        <span>Requisitos</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="faqs">
-                        <span>FAQs / Legales</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="texto_seo">
-                        <span>Texto SEO</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="mas_productos">
-                        <span>Más productos</span>
-                    </label>
+                    <!-- Selector de secciones (oculto por defecto) -->
+                    <div class="nav-item hidden" id="section-selector">
+                        <label class="input-label">Secciones</label>
+                        <div class="checkbox-list" id="secciones-lista">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Secciones para Agrupadora -->
-                <div id="secciones-agrupadora" class="checkbox-grid hidden">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="sitewide">
-                        <span>Sitewide</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="hero">
-                        <span>Hero</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="comparativa">
-                        <span>Comparativa</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="beneficios">
-                        <span>Beneficios</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="como_pedir">
-                        <span>Cómo pedir</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="requisitos">
-                        <span>Requisitos</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="faqs">
-                        <span>FAQs / Legales</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="texto_seo">
-                        <span>Texto SEO</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="secciones" value="mas_productos">
-                        <span>Más productos</span>
-                    </label>
+                <div class="nav-section">
+                    <span class="nav-section-title">RECURSOS</span>
+                    <a href="#" class="nav-link">📖 Ver templates</a>
+                    <a href="#" class="nav-link">💡 Tips de uso</a>
                 </div>
-            </section>
+            </nav>
 
-            <!-- Paso 3: Información del producto -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">3</span>
-                    Información del producto
-                </h2>
-                
-                <div class="form-group">
-                    <label for="nombre_producto">Nombre del producto o agrupador *</label>
-                    <input type="text" id="nombre_producto" name="nombre_producto" required
-                           placeholder="Ej: Préstamos personales, Tarjeta Visa, Cuenta en dólares">
-                </div>
-
-                <div class="form-group">
-                    <label for="audiencia">Audiencia objetivo</label>
-                    <textarea id="audiencia" name="audiencia" rows="2"
-                              placeholder="Ej: Jóvenes de 18-35 años que buscan su primera tarjeta de crédito"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="mensajes_clave">Mensajes clave / Propuesta de valor</label>
-                    <textarea id="mensajes_clave" name="mensajes_clave" rows="3"
-                              placeholder="Ej: Sin costo de mantenimiento, aprobación inmediata, 100% digital"></textarea>
-                </div>
-            </section>
-
-            <!-- Paso 4: Keywords SEO -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">4</span>
-                    Keywords SEO
-                </h2>
-                
-                <div class="form-group">
-                    <label for="keywords">Keywords (una por línea)</label>
-                    <textarea id="keywords" name="keywords" rows="4"
-                              placeholder="prestamos personales&#10;prestamos online&#10;credito personal&#10;prestamo rapido"></textarea>
-                    <span class="form-hint">Incluí la keyword principal primero, luego secundarias y long tail</span>
-                </div>
-            </section>
-
-            <!-- Paso 5: URLs de referencia -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">5</span>
-                    URLs de referencia
-                </h2>
-                
-                <div class="form-group">
-                    <label for="urls_referencia">URLs de competidores o referencia (una por línea)</label>
-                    <textarea id="urls_referencia" name="urls_referencia" rows="4"
-                              placeholder="https://www.banco-ejemplo.com/prestamos&#10;https://www.fintech-ejemplo.com/creditos"></textarea>
-                    <span class="form-hint">Extraeremos el vocabulario y tono de estas páginas</span>
-                </div>
-            </section>
-
-            <!-- Paso 6: AI Overview -->
-            <section class="form-section">
-                <h2 class="section-title">
-                    <span class="step-number">6</span>
-                    AI Overview
-                </h2>
-                
-                <div class="form-group">
-                    <label for="ai_overview">Texto del AI Overview de Google (opcional)</label>
-                    <textarea id="ai_overview" name="ai_overview" rows="4"
-                              placeholder="Pegá acá el texto del AI Overview que aparece en Google para tu keyword principal"></textarea>
-                    <span class="form-hint">Esto ayuda a alinear el contenido con lo que Google considera relevante</span>
-                </div>
-            </section>
-
-            <!-- Botón de envío -->
-            <div class="form-actions">
-                <button type="submit" class="btn-primary" id="btn-generar">
-                    <span class="btn-text">Generar Landing</span>
-                    <span class="btn-loading hidden">
-                        <span class="spinner"></span>
-                        Procesando...
-                    </span>
-                </button>
+            <div class="sidebar-footer">
+                <span class="footer-text">Organic Growth Team</span>
             </div>
-        </form>
+        </aside>
 
-        <!-- Estado de carga -->
-        <div id="loading-state" class="loading-container hidden">
-            <div class="loading-content">
-                <div class="loading-spinner-large"></div>
-                <h3>Generando tu landing...</h3>
-                <p class="loading-step" id="loading-step">Iniciando proceso</p>
-                <div class="loading-progress">
-                    <div class="loading-progress-bar" id="loading-progress-bar"></div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <form id="landing-form">
+                <!-- Header -->
+                <header class="main-header">
+                    <h1>Generador de Landings</h1>
+                    <p class="subtitle">Completá los campos y generá el contenido de tu landing con IA</p>
+                </header>
+
+                <!-- Información del Producto -->
+                <section class="content-section">
+                    <h2 class="section-header">
+                        <span class="section-icon">📦</span>
+                        Información del producto
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-field full-width">
+                            <label for="nombre_producto">Nombre del producto o agrupador</label>
+                            <input type="text" id="nombre_producto" name="nombre_producto" 
+                                   placeholder="Ej: Préstamos personales" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="audiencia">Audiencia objetivo</label>
+                            <textarea id="audiencia" name="audiencia" rows="3"
+                                      placeholder="Ej: Jóvenes de 18-35 años que buscan su primera tarjeta"></textarea>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="mensajes_clave">Mensajes clave / Propuesta de valor</label>
+                            <textarea id="mensajes_clave" name="mensajes_clave" rows="3"
+                                      placeholder="Ej: Sin costo de mantenimiento, aprobación inmediata"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Keywords SEO -->
+                <section class="content-section">
+                    <h2 class="section-header">
+                        <span class="section-icon">🔍</span>
+                        Keywords SEO
+                    </h2>
+                    
+                    <div class="form-field">
+                        <label for="keywords">Keywords (una por línea)</label>
+                        <textarea id="keywords" name="keywords" rows="4"
+                                  placeholder="prestamos personales&#10;prestamos online&#10;credito personal"></textarea>
+                        <span class="field-help">Incluí la keyword principal primero, luego secundarias y long tail</span>
+                    </div>
+                </section>
+
+                <!-- URLs de Referencia -->
+                <section class="content-section">
+                    <h2 class="section-header">
+                        <span class="section-icon">🔗</span>
+                        URLs de referencia
+                    </h2>
+                    
+                    <div class="form-field">
+                        <label for="urls_referencia">URLs de competidores (una por línea)</label>
+                        <textarea id="urls_referencia" name="urls_referencia" rows="4"
+                                  placeholder="https://www.banco-ejemplo.com/prestamos&#10;https://www.fintech-ejemplo.com/creditos"></textarea>
+                        <span class="field-help">Extraeremos el vocabulario y tono de estas páginas</span>
+                    </div>
+                </section>
+
+                <!-- AI Overview -->
+                <section class="content-section">
+                    <h2 class="section-header">
+                        <span class="section-icon">🤖</span>
+                        AI Overview
+                    </h2>
+                    
+                    <div class="form-field">
+                        <label for="ai_overview">Texto del AI Overview de Google (opcional)</label>
+                        <textarea id="ai_overview" name="ai_overview" rows="4"
+                                  placeholder="Pegá acá el texto del AI Overview que aparece en Google para tu keyword principal"></textarea>
+                        <span class="field-help">Ayuda a alinear el contenido con lo que Google considera relevante</span>
+                    </div>
+                </section>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary-streamlit" id="btn-generar">
+                        <span class="btn-content">
+                            <span class="btn-icon">▶</span>
+                            <span class="btn-text">Generar Landing</span>
+                        </span>
+                        <span class="btn-loading hidden">
+                            <span class="spinner"></span>
+                            <span>Procesando...</span>
+                        </span>
+                    </button>
                 </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h3>Generando tu landing...</h3>
+            <p id="loading-step">Iniciando proceso</p>
+            <div class="loading-bar">
+                <div class="loading-bar-fill" id="loading-bar-fill"></div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Herramienta interna del equipo de Organic Growth · Naranja X</p>
-        </footer>
     </div>
 
     <script src="js/config.js"></script>
